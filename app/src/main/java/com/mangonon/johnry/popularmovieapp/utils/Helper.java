@@ -1,5 +1,9 @@
 package com.mangonon.johnry.popularmovieapp.utils;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.view.Surface;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,4 +23,13 @@ public class Helper {
         gc.setTime(date);
         return String.valueOf(gc.get(Calendar.YEAR));
     }
+
+    public static boolean isLandscape(Context context) {
+        int orientation  = context.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return  true;
+        }
+        return false;
+    }
+
 }

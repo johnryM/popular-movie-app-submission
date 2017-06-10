@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mangonon.johnry.popularmovieapp.app.model.Movie;
+import com.mangonon.johnry.popularmovieapp.utils.Helper;
 import com.mangonon.johnry.popularmovieapp.utils.JsonUtils;
 import com.mangonon.johnry.popularmovieapp.utils.NetworkUtils;
 import com.mangonon.johnry.popularmovieapp.ui.MovieAdapter;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.AdapterClickListener, SortDialogFragment.SortDialogListener {
 
-    private final int SPAN_COUNT = 2;
+    private final int SPAN_COUNT_PORTRAIT = 2;
+    private final int SPAN_COUNT_LANDSCAPE = 3;
 
     private RecyclerView mMovieList;
 
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Adap
 
         mMovieList = (RecyclerView) findViewById(R.id.movie_list);
         mMovieList.setHasFixedSize(true);
+
+        int SPAN_COUNT = Helper.isLandscape(this) ? SPAN_COUNT_LANDSCAPE : SPAN_COUNT_PORTRAIT;
         mMovieList.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
 
         if (NetworkUtils.isOnline(this)) {
