@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mangonon.johnry.popularmovieapp.app.model.Movie;
+import com.mangonon.johnry.popularmovieapp.utils.ConnectionTask;
 import com.mangonon.johnry.popularmovieapp.utils.Helper;
 import com.mangonon.johnry.popularmovieapp.utils.JsonUtils;
 import com.mangonon.johnry.popularmovieapp.utils.NetworkUtils;
@@ -21,11 +22,10 @@ import com.mangonon.johnry.popularmovieapp.ui.MovieAdapter;
 
 import org.json.JSONException;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.AdapterClickListener, SortDialogFragment.SortDialogListener {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.AdapterClickListener,
+        SortDialogFragment.SortDialogListener, ConnectionTask.ConnectionTaskCallback {
 
     private final int SPAN_COUNT_PORTRAIT = 2;
     private final int SPAN_COUNT_LANDSCAPE = 3;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Adap
         mMovieList.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
 
         if (NetworkUtils.isOnline(this)) {
-            new ConnectionTask().execute(NetworkUtils.buildMovieDataUrl(NetworkUtils.SortType.POPULAR));
+            new ConnectionTask(this).execute(NetworkUtils.buildMovieDataUrl(NetworkUtils.SortType.POPULAR));
         } else {
             showErrorView();
         }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Adap
 
     @Override
     public void onSortSelected(NetworkUtils.SortType sortType) {
-        new ConnectionTask().execute(NetworkUtils.buildMovieDataUrl(sortType));
+        new ConnectionTask(this).execute(NetworkUtils.buildMovieDataUrl(sortType));
         MovieAdapter movieAdapter = (MovieAdapter) mMovieList.getAdapter();
 
         if (movieAdapter == null) {
@@ -115,36 +115,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Adap
         mMovieList.setVisibility(View.VISIBLE);
     }
 
-    public class ConnectionTask extends AsyncTask<URL, Void, String > {
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            String output = null;
-            try {
-                output =  NetworkUtils.getResponseFromHttpUrl(urls[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return output;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-        }
-
-        @Override
-        protected void onPostExecute(String output) {
-            super.onPostExecute(output);
-
-            try {
-                mMovieDatalist = JsonUtils.getMovieItems(MainActivity.this, output);
-                mMovieList.setAdapter(new MovieAdapter(mMovieDatalist, MainActivity.this));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Error getting Movie Data", Toast.LENGTH_LONG).show();
-            }
+    @Override
+    public void onTaskDone(String output) {
+        try {
+            mMovieDatalist = JsonUtils.getMovieItems(MainActivity.this, output);
+            mMovieList.setAdapter(new MovieAdapter(mMovieDatalist, MainActivity.this));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Error getting Movie Data", Toast.LENGTH_LONG).show();
         }
     }
 }
