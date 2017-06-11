@@ -76,6 +76,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             String url = NetworkUtils.buildMovieImageUrl(IMAGE_SIZE, moviePath).toString();
             Picasso.with(itemView.getContext())
                     .load(url)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
                     .into(mMovieImageView);
         }
 

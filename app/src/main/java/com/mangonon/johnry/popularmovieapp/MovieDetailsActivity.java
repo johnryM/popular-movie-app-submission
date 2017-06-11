@@ -49,7 +49,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
             String moviePath = mMovie.getmImageUrl();
             String url = NetworkUtils.buildMovieImageUrl("w500", moviePath).toString();
 
-            Picasso.with(this).load(url).into(mImage);
+            Picasso.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .into(mImage);
+
             mTitle.setText(mMovie.getmTitle());
             mSynopsis.setText(mMovie.getmSynopsis());
             mRating.setText(String.valueOf(mMovie.getmRating()));
