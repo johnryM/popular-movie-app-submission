@@ -24,30 +24,29 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.AdapterClickListener,
         SortDialogFragment.SortDialogListener, ConnectionTask.ConnectionTaskCallback {
 
     private final int SPAN_COUNT_PORTRAIT = 2;
     private final int SPAN_COUNT_LANDSCAPE = 3;
 
-    private RecyclerView mMovieList;
-
     private ArrayList<Movie> mMovieDatalist = new ArrayList<>();
-    private TextView mErrorTextView;
 
+    @BindView(R.id.movie_list) RecyclerView mMovieList;
+    @BindView(R.id.error_text_view) TextView mErrorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mErrorTextView = (TextView) findViewById(R.id.error_text_view);
-
-        mMovieList = (RecyclerView) findViewById(R.id.movie_list);
-        mMovieList.setHasFixedSize(true);
+        ButterKnife.bind(this);
 
         int SPAN_COUNT = Helper.isLandscape(this) ? SPAN_COUNT_LANDSCAPE : SPAN_COUNT_PORTRAIT;
         mMovieList.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
+        mMovieList.setHasFixedSize(true);
 
         if (NetworkUtils.isOnline(this)) {
             new ConnectionTask(this).execute(NetworkUtils.buildMovieDataUrl(NetworkUtils.SortType.POPULAR));

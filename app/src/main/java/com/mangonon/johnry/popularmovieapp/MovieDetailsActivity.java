@@ -14,17 +14,20 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_MOVIE = "extra_movie";
 
     private Movie mMovie;
 
-    private ImageView mImage;
-    private TextView mTitle;
-    private TextView mSynopsis;
-    private TextView mRating;
-    private TextView mRelease;
+    @BindView(R.id.movie_image_view) ImageView mImage;
+    @BindView(R.id.movie_title_view) TextView mTitle;
+    @BindView(R.id.movie_synopsis_view) TextView mSynopsis;
+    @BindView(R.id.movie_rating_view) TextView mRating;
+    @BindView(R.id.movie_rdate_view) TextView mRelease;
 
     public static Intent newInstance(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -36,15 +39,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        ButterKnife.bind(this);
 
         mMovie = getIntent().getParcelableExtra(EXTRA_MOVIE);
 
         if (mMovie != null) {
-            mImage = (ImageView) findViewById(R.id.movie_image_view);
-            mTitle = (TextView) findViewById(R.id.movie_title_view);
-            mSynopsis = (TextView) findViewById(R.id.movie_synopsis_view);
-            mRating = (TextView) findViewById(R.id.movie_rating_view);
-            mRelease = (TextView) findViewById(R.id.movie_rdate_view);
 
             String moviePath = mMovie.getmImageUrl();
             String url = NetworkUtils.buildMovieImageUrl("w500", moviePath).toString();
